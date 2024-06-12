@@ -26,7 +26,7 @@ public class ItemRepository {
         return new ArrayList<Item>(store.values());
     }
 
-    public void update(Long itemId, Item updateParam){
+    public void updateItem(Long itemId, Item updateParam){
 
         Item findItem = findById(itemId);
 
