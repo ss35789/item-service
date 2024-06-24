@@ -67,13 +67,13 @@ public class BasicItemController {
         return "basic/addForm";
     }
 
-    @PostMapping("/add")
-    public String save(@ModelAttribute Item item, Model model){
-        itemRepository.save(item);
-
-        //model.addAttribute("item", item);
-        return "basic/item";
-    }
+//    @PostMapping("/add")
+//    public String save(@ModelAttribute Item item, Model model){
+//        itemRepository.save(item);
+//
+//        //model.addAttribute("item", item);
+//        return "basic/item";
+//    }
 
 //    @PostMapping("/add")
 //    public String save2( Item item, Model model){
@@ -82,6 +82,14 @@ public class BasicItemController {
 //        //model.addAttribute("item", item);
 //        return "basic/item";
 //    }
+
+    @PostMapping("/add")
+    public String save(@ModelAttribute Item item, Model model){
+        itemRepository.save(item);
+
+        //model.addAttribute("item", item);
+        return "redirect:/basic/items/"+item.getId(); //리다이렉트로 PRG문제 예방
+    }
 
 
 
