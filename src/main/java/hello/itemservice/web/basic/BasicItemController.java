@@ -37,6 +37,15 @@ public class BasicItemController {
         return "basic/item";
     }
 
+    @GetMapping("/{itemId}/edit")
+    public String editItem(@PathVariable long itemId, Model model){
+        Item item = itemRepository.findById(itemId);
+        model.addAttribute("item", item);
+        return "basic/editForm";
+    }
+
+    
+
     @GetMapping("/add")
     public String addForm(){
 
@@ -50,6 +59,17 @@ public class BasicItemController {
         //model.addAttribute("item", item);
         return "basic/item";
     }
+
+//    @PostMapping("/add")
+//    public String save2( Item item, Model model){
+//        itemRepository.save(item);
+//
+//        //model.addAttribute("item", item);
+//        return "basic/item";
+//    }
+
+
+
 
     /*  테스트 용 데이터 */
     @PostConstruct
