@@ -38,22 +38,24 @@ public class BasicItemController {
     }
 
     @GetMapping("/{itemId}/edit")
-    public String editItem(@PathVariable long itemId, Model model){
+    public String editForm(@PathVariable long itemId, Model model){
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
         return "basic/editForm";
     }
 
     @PostMapping("/{itemId}/edit")
-    public String editSaveItem(@PathVariable long itemId,
+    public String edit(@PathVariable long itemId,
             @ModelAttribute Item item , Model model){
-        Item findItem = itemRepository.findById(itemId);
-        findItem.setName(item.getName());
-        findItem.setPrice(item.getPrice());
-        findItem.setQuantity(item.getQuantity());
+//        Item findItem = itemRepository.findById(itemId);
+//        findItem.setName(item.getName());
+//        findItem.setPrice(item.getPrice());
+//        findItem.setQuantity(item.getQuantity());
+        itemRepository.updateItem(itemId, item);
 
-        model.addAttribute("item", findItem);
-        return "basic/item";
+//        model.addAttribute("item", findItem);
+
+        return "redirect:/basic/items/{itemId}";
     }
 
 
