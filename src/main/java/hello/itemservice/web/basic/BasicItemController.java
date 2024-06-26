@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -84,11 +85,14 @@ public class BasicItemController {
 //    }
 
     @PostMapping("/add")
-    public String save(@ModelAttribute Item item, Model model){
-        itemRepository.save(item);
+    public String save(@ModelAttribute Item item, RedirectAttributes redirectAttributes){
+        Item saveditem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId",saveditem.getId());
+
+        redirectAttributes.addAttribute("status",true);
 
         //model.addAttribute("item", item);
-        return "redirect:/basic/items/"+item.getId(); //리다이렉트로 PRG문제 예방
+        return "redirect:/basic/items/{itemId}"; //리다이렉트로 PRG문제 예방
     }
 
 
