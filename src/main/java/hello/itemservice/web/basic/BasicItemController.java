@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.juli.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,10 +42,19 @@ public class BasicItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    public String deleteItem(@PathVariable Long itemId) {
-        itemRepository.deleteById(itemId);
-        return "redirect:/items";
+    public ResponseEntity<String> deleteItem(@PathVariable Long itemId) {
+        try {
+            if (itemRepository.findById(itemId) != null) {
+                itemRepository.deleteById(itemId);
+                return ResponseEntity.ok("아이템이 성공적으로 삭제되었습니다.");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("아이템이 존재하지 않습니다.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("아이템 삭제 중 오류 발생");
+        }
     }
+
 
 
 

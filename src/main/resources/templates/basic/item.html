@@ -11,6 +11,32 @@
     </style>
 </head>
 <body>
+<script>
+    async function deleteItem(itemId) {
+        if (confirm('정말 삭제하시겠습니까?')) {
+            try {
+                const response = await fetch(`/basic/items/${itemId}`, {
+                    method: 'DELETE'
+                });
+
+                const message = await response.text();
+
+                if (response.ok) {
+                    alert(message);
+                    location.href = '/basic/items';  // 수동으로 리다이렉션
+                } else {
+                    alert('삭제에 실패했습니다: ' + message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('삭제 중 오류가 발생했습니다.');
+            }
+        }
+    }
+</script>
+
+
+
 <div class="container">
     <div class="py-5 text-center">
         <h2>상품 상세</h2>
@@ -49,17 +75,21 @@
                     onclick="location.href='editForm.html'" type="button">상품 수정</button>
         </div>
 
-        <form action="@{/basic/items/{itemId}(itemId=${item.id})}" method="post">
-            <input type="hidden" name="_method" value="delete" />
-            <button type="submit" class="btn btn-danger">상품 삭제</button>
-        </form>
 
         <div class="col">
             <button class="w-100 btn btn-secondary btn-lg"
                     th:onclick="|location.href= '@{/basic/items}'|"
                     onclick="location.href='items.html'" type="button">목록으로</button>
         </div>
+        <div class="col">
+            <button class="w-100 btn btn-danger btn-lg"
+                    th:onclick="|deleteItem(${item.id})|" type="button">상품 삭제</button>
+        </div>
+
     </div>
 </div> <!-- /container -->
 </body>
+
+
+
 </html>
