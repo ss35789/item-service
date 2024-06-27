@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.juli.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,15 @@ public class BasicItemController {
         model.addAttribute("item", item);
         return "basic/item";
     }
+
+    @DeleteMapping("/{itemId}")
+    public String deleteItem(@PathVariable Long itemId) {
+        itemRepository.deleteById(itemId);
+        return "redirect:/items";
+    }
+
+
+
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable long itemId, Model model){
@@ -94,6 +104,8 @@ public class BasicItemController {
         //model.addAttribute("item", item);
         return "redirect:/basic/items/{itemId}"; //리다이렉트로 PRG문제 예방
     }
+
+
 
 
 
