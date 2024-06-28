@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
+import org.antlr.v4.runtime.misc.NotNull;
 
 @Data
 @Entity
@@ -12,12 +13,14 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
     private String name;
+    @NotNull
     private Integer price;
+    @NotNull
     private Integer quantity;
 
-    public Item() {
-    }
+    public Item(){}
 
     public Item(String name, Integer price, Integer quantity) {
         this.name = name;
