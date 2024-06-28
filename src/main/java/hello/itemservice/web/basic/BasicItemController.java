@@ -1,15 +1,12 @@
 package hello.itemservice.web.basic;
 
 import hello.itemservice.domain.item.Item;
-import hello.itemservice.domain.item.ItemRepository;
+import hello.itemservice.service.ItemService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.juli.logging.LogFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import hello.itemservice.domain.item.ItemRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,11 +21,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BasicItemController {
 
-    private final ItemRepository itemRepository;
+    private final ItemService itemService;
 
     @GetMapping
     public String items(Model model){
-        List<Item> items = itemRepository.findAll();
+        List<Item> items = itemService.findAll();
         model.addAttribute("items", items);
         return "basic/items";
 
@@ -36,7 +33,7 @@ public class BasicItemController {
 
     @GetMapping("/{itemId}")
     public String item(@PathVariable long itemId, Model model){
-        Item item = itemRepository.findById(itemId);
+        Item item = itemService.findById(itemId);
         model.addAttribute("item", item);
         return "basic/item";
     }
@@ -44,8 +41,8 @@ public class BasicItemController {
     @DeleteMapping("/{itemId}")
     public ResponseEntity<String> deleteItem(@PathVariable Long itemId) {
         try {
-            if (itemRepository.findById(itemId) != null) {
-                itemRepository.deleteById(itemId);
+            if (itemService.findById(itemId) != null) {
+                itemService.deleteById(itemId);
                 return ResponseEntity.ok("아이템이 성공적으로 삭제되었습니다.");
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("아이템이 존재하지 않습니다.");
@@ -61,7 +58,7 @@ public class BasicItemController {
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable long itemId, Model model){
-        Item item = itemRepository.findById(itemId);
+        Item item = itemService.findById(itemId);
         model.addAttribute("item", item);
         return "basic/editForm";
     }
@@ -69,11 +66,11 @@ public class BasicItemController {
     @PostMapping("/{itemId}/edit")
     public String edit(@PathVariable long itemId,
             @ModelAttribute Item item , Model model){
-//        Item findItem = itemRepository.findById(itemId);
+//        Item findItem = itemService.findById(itemId);
 //        findItem.setName(item.getName());
 //        findItem.setPrice(item.getPrice());
 //        findItem.setQuantity(item.getQuantity());
-        itemRepository.updateItem(itemId, item);
+        itemService.updateItem(itemId, item);
 
 //        model.addAttribute("item", findItem);
 
@@ -91,7 +88,7 @@ public class BasicItemController {
 
 //    @PostMapping("/add")
 //    public String save(@ModelAttribute Item item, Model model){
-//        itemRepository.save(item);
+//        itemService.save(item);
 //
 //        //model.addAttribute("item", item);
 //        return "basic/item";
@@ -99,7 +96,7 @@ public class BasicItemController {
 
 //    @PostMapping("/add")
 //    public String save2( Item item, Model model){
-//        itemRepository.save(item);
+//        itemService.save(item);
 //
 //        //model.addAttribute("item", item);
 //        return "basic/item";
@@ -107,7 +104,7 @@ public class BasicItemController {
 
     @PostMapping("/add")
     public String save(@ModelAttribute Item item, RedirectAttributes redirectAttributes){
-        Item saveditem = itemRepository.save(item);
+        Item saveditem = itemService.save(item);
         redirectAttributes.addAttribute("itemId",saveditem.getId());
 
         redirectAttributes.addAttribute("status",true);
@@ -124,8 +121,8 @@ public class BasicItemController {
     /*  테스트 용 데이터 */
     @PostConstruct
     public void init(){
-        itemRepository.save(new Item("itemA", 10000, 10));
-        itemRepository.save(new Item("itemB", 12000, 12));
+        itemService.save(new Item("itemA", 10000, 10));
+        itemService.save(new Item("itemB", 12000, 12));
     }
 
 
