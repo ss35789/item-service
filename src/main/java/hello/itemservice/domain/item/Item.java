@@ -1,6 +1,5 @@
 package hello.itemservice.domain.item;
 
-import hello.itemservice.domain.User.User;
 import lombok.Data;
 
 
@@ -10,7 +9,6 @@ public class Item {
     private String name;
     private Integer price;
     private Integer quantity;
-    private User user;
 
     public Item(){
 
