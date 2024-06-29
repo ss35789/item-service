@@ -15,7 +15,7 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    public Item save(Item item){
+    public Item save(Item item) {
         try {
             return itemRepository.save(item);
         } catch (Exception e) {
@@ -23,10 +23,11 @@ public class ItemService {
         }
     }
 
-    public Item findById(Long id) {
-        return itemRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException("Item not found with id " + id));
+    public Item findById(Long itemId){
+        return itemRepository.findById(itemId)
+                .orElseThrow(()-> new ItemNotFoundException("Item not found with id "+ itemId));
     }
+
 
     public List<Item> findAll() {
         try {
@@ -49,8 +50,9 @@ public class ItemService {
     }
 
     public void deleteById(Long itemId) {
+        Item item = findById(itemId); // 이 부분에서 예외가 발생해야 합니다.
         try {
-            itemRepository.delete(findById(itemId));
+            itemRepository.delete(item);
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete item", e);
         }
