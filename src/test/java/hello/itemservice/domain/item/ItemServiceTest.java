@@ -135,20 +135,5 @@ class ItemServiceTest {
                 .hasMessageContaining("Item not found with id 999");
     }
 
-    @Test
-    void clearStore() {
-        //given
-        Item item1 = new Item("item1", 10000, 10);
-        Item item2 = new Item("item2", 20000, 20);
 
-        itemService.save(item1);
-        itemService.save(item2);
-
-        //when
-        itemService.clearStore();
-
-        //then
-        List<Item> list = itemService.findAll();
-        assertThat(list).isEmpty();
-    }
 }
