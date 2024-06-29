@@ -2,11 +2,8 @@ package hello.itemservice.web.basic;
 
 import hello.itemservice.domain.item.Item;
 import hello.itemservice.service.ItemService;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import hello.itemservice.domain.item.ItemRepository;
 import org.springframework.http.HttpStatus;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,116 +12,70 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
-
 @Controller
 @RequestMapping("/basic/items")
 @RequiredArgsConstructor
-public class BasicItemController {
+public class BasicItemController{
 
     private final ItemService itemService;
 
     @GetMapping
     public String items(Model model){
-        List<Item> items = itemService.findAll();
-        model.addAttribute("items", items);
+        List<Item> itemList = itemService.findAll();
+        if(itemList != null){
+            model.addAttribute("items",itemList);
+        }
+
         return "basic/items";
-
     }
-
     @GetMapping("/{itemId}")
-    public String item(@PathVariable long itemId, Model model){
+    public String item(@PathVariable Long itemId, Model model){
         Item item = itemService.findById(itemId);
-        model.addAttribute("item", item);
+        if(item != null) {
+            model.addAttribute("item", item);
+        }
+
         return "basic/item";
     }
 
-    @DeleteMapping("/{itemId}")
-    public ResponseEntity<String> deleteItem(@PathVariable Long itemId) {
-        try {
-            if (itemService.findById(itemId) != null) {
-                itemService.deleteById(itemId);
-                return ResponseEntity.ok("아이템이 성공적으로 삭제되었습니다.");
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("아이템이 존재하지 않습니다.");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("아이템 삭제 중 오류 발생");
-        }
-    }
-
-
-
-
-
     @GetMapping("/{itemId}/edit")
-    public String editForm(@PathVariable long itemId, Model model){
+    public String edit(@PathVariable Long itemId, Model model){
         Item item = itemService.findById(itemId);
+
         model.addAttribute("item", item);
+
         return "basic/editForm";
     }
 
     @PostMapping("/{itemId}/edit")
-    public String edit(@PathVariable long itemId,
-            @ModelAttribute Item item , Model model){
-//        Item findItem = itemService.findById(itemId);
-//        findItem.setName(item.getName());
-//        findItem.setPrice(item.getPrice());
-//        findItem.setQuantity(item.getQuantity());
+    public String edit(@PathVariable Long itemId , @ModelAttribute Item item){
         itemService.updateItem(itemId, item);
-
-//        model.addAttribute("item", findItem);
-
         return "redirect:/basic/items/{itemId}";
     }
 
 
-
-
     @GetMapping("/add")
-    public String addForm(){
-
+    public String save(){
         return "basic/addForm";
     }
 
-//    @PostMapping("/add")
-//    public String save(@ModelAttribute Item item, Model model){
-//        itemService.save(item);
-//
-//        //model.addAttribute("item", item);
-//        return "basic/item";
-//    }
-
-//    @PostMapping("/add")
-//    public String save2( Item item, Model model){
-//        itemService.save(item);
-//
-//        //model.addAttribute("item", item);
-//        return "basic/item";
-//    }
-
     @PostMapping("/add")
     public String save(@ModelAttribute Item item, RedirectAttributes redirectAttributes){
-        Item saveditem = itemService.save(item);
-        redirectAttributes.addAttribute("itemId",saveditem.getId());
 
-        redirectAttributes.addAttribute("status",true);
+        itemService.save(item);
 
-        //model.addAttribute("item", item);
-        return "redirect:/basic/items/{itemId}"; //리다이렉트로 PRG문제 예방
+        redirectAttributes.addAttribute("itemId", item.getId());
+
+
+
+        return "redirect:/basic/items/{itemId}";
     }
 
-
-
-
-
-
-    /*  테스트 용 데이터 */
-    @PostConstruct
-    public void init(){
-        itemService.save(new Item("itemA", 10000, 10));
-        itemService.save(new Item("itemB", 12000, 12));
+    @DeleteMapping("/{itemId}")
+    public ResponseEntity<String> delete(@PathVariable Long itemId){
+        itemService.deleteById(itemId);
+        return new ResponseEntity<>("성공적으로 삭제되었습니다.",HttpStatus.OK);
     }
-
 
 
 
