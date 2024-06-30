@@ -11,58 +11,64 @@ import java.util.List;
 public class ItemService {
     private final ItemRepository itemRepository;
 
-    public ItemService(ItemRepository itemRepository) {
+    public ItemService(ItemRepository itemRepository){
         this.itemRepository = itemRepository;
     }
 
-    public Item save(Item item) {
-        try {
+    public Item save(Item item){
+        try{
             return itemRepository.save(item);
-        } catch (Exception e) {
+
+        }catch(Exception e){
             throw new RuntimeException("Failed to save item", e);
         }
+
+    }
+    public Item findById(Long id){
+        return itemRepository.findById(id).orElseThrow(()-> new ItemNotFoundException("Item not found with id "+ id));
     }
 
-    public Item findById(Long itemId){
-        return itemRepository.findById(itemId)
-                .orElseThrow(()-> new ItemNotFoundException("Item not found with id "+ itemId));
-    }
-
-
-    public List<Item> findAll() {
-        try {
+    public List<Item> findAll(){
+        try{
             return itemRepository.findAll();
-        } catch (Exception e) {
+        }catch(Exception e){
             throw new RuntimeException("Failed to retrieve items", e);
         }
     }
 
-    public void updateItem(Long itemId, Item updateParam) {
-        Item existingItem = findById(itemId);
-        existingItem.setName(updateParam.getName());
-        existingItem.setPrice(updateParam.getPrice());
-        existingItem.setQuantity(updateParam.getQuantity());
-        try {
-            itemRepository.save(existingItem);
-        } catch (Exception e) {
+    public Item updateItem(Long id, Item paramItem){
+
+        Item existItem = findById(id);
+        existItem.setName(paramItem.getName());
+        existItem.setPrice(paramItem.getPrice());
+        existItem.setQuantity(paramItem.getQuantity());
+
+        try{
+            itemRepository.save(existItem);
+
+            return existItem;
+        }catch(Exception e){
             throw new RuntimeException("Failed to update item", e);
         }
     }
 
-    public void deleteById(Long itemId) {
-        Item item = findById(itemId); // 이 부분에서 예외가 발생해야 합니다.
-        try {
+    public void deleteById(Long id){
+        Item item = findById(id);
+
+        try{
             itemRepository.delete(item);
-        } catch (Exception e) {
+        }catch(Exception e){
             throw new RuntimeException("Failed to delete item", e);
         }
     }
 
-    public void clearStore() {
-        try {
+    public void clearStore(){
+        try{
             itemRepository.deleteAll();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to clear store", e);
+        }catch(Exception e){
+            throw new RuntimeException("Failed to clear items", e);
         }
     }
+
+
 }

@@ -13,70 +13,60 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
-@RequestMapping("/basic/items")
+@RequestMapping("basic/items")
 @RequiredArgsConstructor
-public class BasicItemController{
-
+public class BasicItemController {
     private final ItemService itemService;
+
 
     @GetMapping
     public String items(Model model){
-        List<Item> itemList = itemService.findAll();
-        if(itemList != null){
-            model.addAttribute("items",itemList);
-        }
+        List<Item> items = itemService.findAll();
+        model.addAttribute("items", items);
 
         return "basic/items";
     }
-    @GetMapping("/{itemId}")
+
+   @GetMapping("/{itemId}")
     public String item(@PathVariable Long itemId, Model model){
         Item item = itemService.findById(itemId);
-        if(item != null) {
-            model.addAttribute("item", item);
-        }
-
-        return "basic/item";
-    }
-
-    @GetMapping("/{itemId}/edit")
-    public String edit(@PathVariable Long itemId, Model model){
-        Item item = itemService.findById(itemId);
-
         model.addAttribute("item", item);
 
-        return "basic/editForm";
-    }
+        return "basic/item";
+   }
 
-    @PostMapping("/{itemId}/edit")
-    public String edit(@PathVariable Long itemId , @ModelAttribute Item item){
-        itemService.updateItem(itemId, item);
-        return "redirect:/basic/items/{itemId}";
-    }
-
-
-    @GetMapping("/add")
+   @GetMapping("/add")
     public String save(){
         return "basic/addForm";
-    }
+   }
 
-    @PostMapping("/add")
+   @PostMapping("/add")
     public String save(@ModelAttribute Item item, RedirectAttributes redirectAttributes){
-
         itemService.save(item);
+       redirectAttributes.addAttribute("itemId", item.getId());
+        return "redirect:/basic/items/{itemId}";
+   }
 
-        redirectAttributes.addAttribute("itemId", item.getId());
+   @GetMapping("/{itemId}/edit")
+    public String edit(@PathVariable Long itemId, Model model){
+        Item item = itemService.findById(itemId);
+        model.addAttribute("item", item);
+        return "basic/editForm";
+   }
 
-
+   @PostMapping("/{itemId}/edit")
+    public String edit(@PathVariable Long itemId,
+                       @ModelAttribute Item item){
+        itemService.updateItem(itemId, item);
 
         return "redirect:/basic/items/{itemId}";
-    }
+   }
 
-    @DeleteMapping("/{itemId}")
+   @DeleteMapping("/{itemId}")
     public ResponseEntity<String> delete(@PathVariable Long itemId){
         itemService.deleteById(itemId);
-        return new ResponseEntity<>("성공적으로 삭제되었습니다.",HttpStatus.OK);
-    }
 
-
+        return new ResponseEntity<>("데이터가 삭제되었습니다", HttpStatus.OK);
+   }
 
 }
